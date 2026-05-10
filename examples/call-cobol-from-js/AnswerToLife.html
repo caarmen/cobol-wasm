@@ -1,0 +1,39 @@
+<script src="./build/AnswerToLife.js"></script>
+<script>
+
+function answerToLife(api) {
+  // Allocate memory to store the answer to life output argument:
+  const ptr = Module._malloc(11);
+  Module.HEAPU8.fill(0, ptr, ptr + 11);
+
+  // Call our COBOL "ANSWER-TO-LIFE" function.
+  const rc = api.answerToLife(ptr);
+
+  // Convert the result to a string.
+  const result = Module.UTF8ToString(ptr);
+  Module._free(ptr);
+
+  return result;
+}
+
+Module.onRuntimeInitialized = async () => {
+  // Map our library's C-functions to javascript
+  // functions for easier invocation.
+  const api = {
+    cobInit: Module.cwrap("cob_init", null, ["number", "number"]),
+    answerToLife: Module.cwrap("ANSWER__TO__LIFE", "number", ["number"]),
+  };
+
+  // Need to initialize the cobol runtime.
+  api.cobInit();
+
+  document.getElementById("btn").addEventListener(
+    "click", () => {
+      const answer = answerToLife(api);
+      alert(`The answer is ${answer}`)
+    }
+  )
+
+};
+</script>
+<button id="btn">Click for the answer to life</button>
