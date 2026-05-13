@@ -8,7 +8,7 @@ mkdir -p "${deps_dir}"
 pushd "${deps_dir}" || exit
 
 if [ ! -d emsdk ]; then
-    git clone git@github.com:emscripten-core/emsdk.git
+    git clone https://github.com/emscripten-core/emsdk.git
 fi
 
 pushd emsdk || exit

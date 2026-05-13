@@ -15,21 +15,22 @@ fi
 source "${emsdk_dir}/emsdk_env.sh"
 
 if [ ! -d libdb ]; then
-    git clone git@github.com:berkeleydb/libdb.git
+    git clone https://github.com/berkeleydb/libdb.git
 fi
 
-pushd libdb || exit
+pushd libdb/build_unix || exit
 
-emconfigure ./dist/configure \
-  --prefix="$(pwd)/install" \
-  --disable-tcl  \
+emconfigure ../dist/configure \
+  --prefix=$(pwd)/install \
+  --disable-tcl \
   --disable-test \
   --enable-sequences \
   --disable-dbm \
   --disable-java \
   --disable-sql \
   --disable-static \
-  --disable-cxx
+  --disable-cxx \
+  --with-mutex=POSIX/pthreads
 
 emmake make
 

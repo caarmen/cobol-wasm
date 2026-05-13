@@ -26,7 +26,7 @@ fi
 
 pushd gmp || exit
 
-glibtoolize --force --copy
+libtoolize --force --copy
 autoreconf -vfi
 emconfigure ./configure \
   --host=wasm32-unknown-emscripten \

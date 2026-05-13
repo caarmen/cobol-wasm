@@ -26,14 +26,10 @@ Module.onRuntimeInitialized = async () => {
 
   // Need to initialize the cobol runtime.
   api.cobInit();
+  const answer = answerToLife(api);
 
-  document.getElementById("btn").addEventListener(
-    "click", () => {
-      const answer = answerToLife(api);
-      alert(`The answer is ${answer}`)
-    }
-  )
+  document.getElementById("text").textContent=`The answer to life is ${answer}`
 
 };
 </script>
-<button id="btn">Click for the answer to life</button>
+<div id="text"></div>

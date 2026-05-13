@@ -27,20 +27,22 @@ fi
 
 # Build libcob
 pushd gnucobol-wasm || exit
-glibtoolize --force --copy
-autoreconf -vfi
+
+aclocal
+automake
 
 emconfigure ./configure \
     --disable-shared \
-    --prefix="$(pwd)/install" \
+    --prefix="/opt/gnucobol-wasm" \
     LDFLAGS="-L${deps_dir}/gmp/.libs -lgmp" \
-    LIBS="${deps_dir}/libdb/.libs/libdb-5.3.dylib" \
-    CPPFLAGS="-I${deps_dir}/gmp/ -I${deps_dir}/libdb" \
-    BDB_LIBS="${deps_dir}/libdb/.libs/libdb-5.3.dylib" \
-    BDB_CFLAGS="-I${deps_dir}/libdb" 
+    LIBS="${deps_dir}/libdb/build_unix/.libs/libdb-5.3.so" \
+    CPPFLAGS="-I${deps_dir}/gmp/ -I${deps_dir}/libdb/build_unix" \
+    BDB_LIBS="${deps_dir}/libdb/build_unix/.libs/libdb-5.3.so" \
+    BDB_CFLAGS="-I${deps_dir}/libdb/build_unix" 
      
 
 emmake make SUBDIRS="libcob"
+emmake make install SUBDIRS="libcob"
 
 popd || exit
 popd || exit

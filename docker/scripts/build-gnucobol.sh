@@ -27,14 +27,14 @@ fi
 
 # Build cobc
 pushd gnucobol || exit
-glibtoolize --force --copy
-autoreconf -vfi
+aclocal
+automake
 ./configure \
     --disable-shared \
-    --prefix="$(pwd)/install" \
+    --prefix="/opt/gnucobol" \
     --without-db
 
-make  SUBDIRS="lib libcob cobc config"
+make SUBDIRS="lib libcob cobc config"
 make install SUBDIRS="lib libcob cobc config"
 
 
