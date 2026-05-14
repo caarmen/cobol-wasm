@@ -29,4 +29,8 @@ WORKDIR /workspace
 
 COPY docker/scripts/*.sh .
 
-RUN ./build-all.sh
+RUN ./build-emsdk.sh
+RUN ./build-gmp.sh
+RUN ./build-libdb.sh
+RUN ./build-gnucobol.sh
+RUN ./build-gnucobol-wasm.sh
