@@ -18,10 +18,14 @@ if [ ! -d libdb ]; then
     git clone https://github.com/berkeleydb/libdb.git
 fi
 
+prefix="${PREFIX_ROOT:-/opt}"
+mkdir -p "${prefix}"
+prefix="$(realpath "${prefix}")"
+
 pushd libdb/build_unix || exit
 
 emconfigure ../dist/configure \
-  --prefix=$(pwd)/install \
+  --prefix="${prefix}" \
   --disable-tcl \
   --disable-test \
   --enable-sequences \
@@ -33,6 +37,8 @@ emconfigure ../dist/configure \
   --with-mutex=POSIX/pthreads
 
 emmake make
+emmake make install
+emmake make clean
 
 popd || exit
 popd || exit

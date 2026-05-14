@@ -39,6 +39,7 @@ automake
 
 make SUBDIRS="lib libcob cobc config"
 make install SUBDIRS="lib libcob cobc config"
+make clean SUBDIRS="lib libcob cobc config"
 
 
 popd || exit

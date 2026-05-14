@@ -34,7 +34,7 @@ pushd gnucobol-wasm || exit
 aclocal
 automake
 
-BDB_LIBS_DIR="${deps_dir}/libdb/build_unix/.libs/"
+BDB_LIBS_DIR="${prefix_root}/lib/"
 if [[ -f "${BDB_LIBS_DIR}/libdb-5.3.dylib" ]]; then
   BDB_LIB="${BDB_LIBS_DIR}/libdb-5.3.dylib"
 else
@@ -44,15 +44,16 @@ fi
 emconfigure ./configure \
     --disable-shared \
     --prefix="${prefix_root}/gnucobol-wasm" \
-    LDFLAGS="-L${deps_dir}/gmp/.libs -lgmp" \
+    LDFLAGS="-L${prefix_root}/lib -lgmp" \
     LIBS="${BDB_LIB}" \
-    CPPFLAGS="-I${deps_dir}/gmp/ -I${deps_dir}/libdb/build_unix" \
+    CPPFLAGS="-I${prefix_root}/include/" \
     BDB_LIBS="${BDB_LIB}" \
-    BDB_CFLAGS="-I${deps_dir}/libdb/build_unix" 
+    BDB_CFLAGS="-I${prefix_root}/include"
      
 
 emmake make SUBDIRS="libcob"
 emmake make install SUBDIRS="libcob"
+emmake make clean SUBDIRS="libcob"
 
 popd || exit
 popd || exit
