@@ -46,4 +46,5 @@ emmake make clean
 
 
 popd || exit
+rm -rf gmp
 popd || exit

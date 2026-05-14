@@ -41,4 +41,5 @@ emmake make install
 emmake make clean
 
 popd || exit
+rm -rf libdb
 popd || exit

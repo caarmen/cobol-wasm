@@ -9,13 +9,6 @@ mkdir -p "${deps_dir}"
 pushd "${deps_dir}" || exit
 emsdk_dir="emsdk"
 
-for dep in emsdk gmp libdb; do
-    if [ ! -d "${dep}" ]; then
-        echo "${dep} not present, exiting"
-        exit 1
-    fi
-done
-
 source "${emsdk_dir}/emsdk_env.sh"
 
 if [ ! -d gnucobol-wasm ]; then
@@ -56,4 +49,5 @@ emmake make install SUBDIRS="libcob"
 emmake make clean SUBDIRS="libcob"
 
 popd || exit
+rm -rf gnucobol-wasm
 popd || exit

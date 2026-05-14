@@ -9,13 +9,6 @@ mkdir -p "${deps_dir}"
 pushd "${deps_dir}" || exit
 emsdk_dir="emsdk"
 
-for dep in emsdk gmp libdb; do
-    if [ ! -d "${dep}" ]; then
-        echo "${dep} not present, exiting"
-        exit 1
-    fi
-done
-
 source "${emsdk_dir}/emsdk_env.sh"
 
 if [ ! -d gnucobol ]; then
@@ -43,4 +36,5 @@ make clean SUBDIRS="lib libcob cobc config"
 
 
 popd || exit
+rm -rf gnucobol
 popd || exit
