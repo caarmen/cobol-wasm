@@ -9,13 +9,6 @@ mkdir -p "${deps_dir}"
 pushd "${deps_dir}" || exit
 emsdk_dir="emsdk"
 
-for dep in emsdk gmp libdb; do
-    if [ ! -d "${dep}" ]; then
-        echo "${dep} not present, exiting"
-        exit 1
-    fi
-done
-
 source "${emsdk_dir}/emsdk_env.sh"
 
 if [ ! -d gnucobol-wasm ]; then
@@ -26,23 +19,35 @@ if [ ! -d gnucobol-wasm ]; then
 fi
 
 # Build libcob
-pushd gnucobol-wasm || exit
+prefix_root="${PREFIX_ROOT:-/opt}"
+mkdir -p "${prefix_root}"
+prefix_root="$(realpath "${prefix_root}")"
 
+pushd gnucobol-wasm || exit
 aclocal
 automake
 
+BDB_LIBS_DIR="${prefix_root}/lib/"
+if [[ -f "${BDB_LIBS_DIR}/libdb-5.3.dylib" ]]; then
+  BDB_LIB="${BDB_LIBS_DIR}/libdb-5.3.dylib"
+else
+  BDB_LIB="${BDB_LIBS_DIR}/libdb-5.3.so"
+fi
+
 emconfigure ./configure \
     --disable-shared \
-    --prefix="/opt/gnucobol-wasm" \
-    LDFLAGS="-L${deps_dir}/gmp/.libs -lgmp" \
-    LIBS="${deps_dir}/libdb/build_unix/.libs/libdb-5.3.so" \
-    CPPFLAGS="-I${deps_dir}/gmp/ -I${deps_dir}/libdb/build_unix" \
-    BDB_LIBS="${deps_dir}/libdb/build_unix/.libs/libdb-5.3.so" \
-    BDB_CFLAGS="-I${deps_dir}/libdb/build_unix" 
+    --prefix="${prefix_root}/gnucobol-wasm" \
+    LDFLAGS="-L${prefix_root}/lib -lgmp" \
+    LIBS="${BDB_LIB}" \
+    CPPFLAGS="-I${prefix_root}/include/" \
+    BDB_LIBS="${BDB_LIB}" \
+    BDB_CFLAGS="-I${prefix_root}/include"
      
 
 emmake make SUBDIRS="libcob"
 emmake make install SUBDIRS="libcob"
+emmake make clean SUBDIRS="libcob"
 
 popd || exit
+rm -rf gnucobol-wasm
 popd || exit

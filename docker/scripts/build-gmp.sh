@@ -24,11 +24,16 @@ if [ ! -d gmp ]; then
     mv "gmp-${gmp_version}" gmp
 fi
 
+prefix="${PREFIX_ROOT:-/opt}"
+mkdir -p "${prefix}"
+prefix="$(realpath "${prefix}")"
+
 pushd gmp || exit
 
-libtoolize --force --copy
+${LIBTOOLIZE:-libtoolize} --force --copy
 autoreconf -vfi
 emconfigure ./configure \
+  --prefix="${prefix}" \
   --host=wasm32-unknown-emscripten \
   --disable-shared \
   --disable-assembly \
@@ -36,7 +41,10 @@ emconfigure ./configure \
   HOST_CC=clang
 
 emmake make
+emmake make install
+emmake make clean
 
 
 popd || exit
+rm -rf gmp
 popd || exit
