@@ -1,0 +1,33 @@
+<script type="module">
+  import createModule from "./build/output.js";
+  // Capture stdout from the COBOL program and
+  // write it to the text div
+  document.addEventListener("DOMContentLoaded", () => {
+    // When the user selects a file:
+    // Mount the file and call our COBOL program with the path to the file.
+    document
+      .getElementById("fileInput")
+      .addEventListener("change", async (event) => {
+        var Module = await createModule({
+          print(text) {
+            const textElem = document.getElementById("text");
+            textElem.innerText += text + "\n";
+          }
+        })
+        const file = event.target.files[0];
+        const buffer = await file.arrayBuffer();
+        try {
+          Module.FS.unlink("input.txt");
+        } catch(error) {}
+        Module.FS.writeFile("input.txt", new Uint8Array(buffer));
+        Module.callMain(["input.txt"]);
+      });
+  });
+</script>
+
+<h1>Advent of Code, 2024, day 1, part 1</h1>
+Input:
+<input type="file" id="fileInput" />
+<br />
+Result: <br />
+<div id="text"></div>

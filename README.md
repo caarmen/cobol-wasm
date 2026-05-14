@@ -118,14 +118,14 @@ PREFIX_ROOT=/path/to/install ./docker/scripts/build-all.sh
 
 ## Disclaimer
 
-⚠️This project has only been tested with the couple of COBOL source files 
+⚠️This project has only been tested with the few COBOL source files 
 in the examples folder. It has not been used in prouction.
 
 Use at your own risk! 🫠
 
 ## License
 The files in this repository (shell scripts, Dockerfile, examples, etc.)
-are licensed under the MIT License.
+are licensed under the MIT License, unless otherwise noted.
 
 This project builds and redistributes GnuCOBOL artifacts inside the Docker
 image. Those artifacts remain covered by their original licenses.
