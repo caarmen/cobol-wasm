@@ -1,6 +1,46 @@
 # COBOL-Wasm
 
-This project provides a docker image to compile COBOL programs to be used in a web browser.
+This project provides a Docker image to compile COBOL programs to WebAssembly, so they can run in a web browser.
+
+How does it work?
+
+```mermaid
+flowchart TD
+    subgraph sources[Source code]
+        input_cob@{shape: documents, label: 1.<br>file1.cob<br>file2.cob<br>file3.cob}
+        webapp_html@{shape: document, label: webapp.html}
+    end
+    subgraph intermediate[Intermediate files]
+        gen_c
+    end
+    subgraph weboutput[Web output]
+        output_js[output.js]
+        output_wasm[output.wasm]
+        output_js --> |loads|output_wasm
+    end
+
+    input_cob --> |2.<br>GnuCOBOL #40;cobc#41;<br>compiles to C| gen_c
+    
+    gen_c@{shape: documents, label: file1.c<br>file2.c<br>file3.c} --> |3.<br>Emscripten #40;emcc#41;<br>compiles to WebAssembly| output_wasm
+    gen_c --> |3.<br>Emscripten #40;emcc#41;<br>generates glue code| output_js
+    webapp_html --> |4.<br>&lt;script&gt; loads | output_js
+    webapp_html --> |5.<br>Calls WebAssembly functions compiled from COBOL | output_wasm
+
+    style intermediate stroke-dasharray: 5 5
+    style gen_c stroke-dasharray: 5 5
+    style input_cob stroke-width: 4px
+    style webapp_html stroke-width: 4px
+```
+
+1. You have some COBOL source files.
+2. GnuCOBOL (`cobc` compiler) compiles the COBOL files into intermediate C files.
+3. Emscripten (`emcc`) compiles the C files into a WebAssembly (`wasm`) file, and creates a JavaScript (`js`) "glue" file.
+4. Your web application loads the generated `js` file, which in turn loads the `wasm` file.
+5. Your web application's JavaScript calls functions compiled from the COBOL sources using the [Emscripten Module APIs](https://emscripten.org/docs/api_reference/module.html).
+
+See also:
+* [Compiling a new C/C++ module to WebAssembly](https://developer.mozilla.org/en-US/docs/WebAssembly/Guides/C_to_Wasm) (Mdn guide)
+* [Emscripten documentation for calling C functions from JavaScript](https://emscripten.org/docs/api_reference/preamble.js)
 
 ## Usage
 
@@ -75,6 +115,13 @@ If you want to install these files to a location other than `/opt`, set the `PRE
 ```shell
 PREFIX_ROOT=/path/to/install ./docker/scripts/build-all.sh
 ```
+
+## Disclaimer
+
+⚠️This project has only been tested with the couple of COBOL source files 
+in the examples folder. It has not been used in prouction.
+
+Use at your own risk! 🫠
 
 ## License
 The files in this repository (shell scripts, Dockerfile, examples, etc.)
