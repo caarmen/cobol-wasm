@@ -1,13 +1,13 @@
 <script src="./build/AnswerToLife.js"></script>
 <script>
 
-function answerToLife(api) {
+function makeCall(cobolStringFunction) {
   // Allocate memory to store the answer to life output argument:
   const ptr = Module._malloc(11);
   Module.HEAPU8.fill(0, ptr, ptr + 11);
 
   // Call our COBOL "ANSWER-TO-LIFE" function.
-  const rc = api.answerToLife(ptr);
+  const rc = cobolStringFunction(ptr);
 
   // Convert the result to a string.
   const result = Module.UTF8ToString(ptr);
@@ -22,13 +22,15 @@ Module.onRuntimeInitialized = async () => {
   const api = {
     cobInit: Module.cwrap("cob_init", null, ["number", "number"]),
     answerToLife: Module.cwrap("ANSWER__TO__LIFE", "number", ["number"]),
+    answerToUniverse: Module.cwrap("ANSWER__TO__UNIVERSE", "number", ["number"]),
   };
 
   // Need to initialize the cobol runtime.
   api.cobInit();
-  const answer = answerToLife(api);
+  const lifeAnswer = makeCall(api.answerToLife);
+  const universeAnswer = makeCall(api.answerToUniverse);
 
-  document.getElementById("text").textContent=`The answer to life is ${answer}`
+  document.getElementById("text").textContent=`The answer to life is ${lifeAnswer}, and ${universeAnswer} for the universe.`
 
 };
 </script>
