@@ -5,5 +5,5 @@ test('answer to life is rendered', async ({ page }) => {
 
   const text = await page.locator('#text');
 
-  await expect(text).toHaveText(/The answer to life is 42/);
+  await expect(text).toHaveText(/The answer to life is 42, and 36 for the universe./);
 });

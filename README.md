@@ -5,14 +5,14 @@ This project provides a docker image to compile COBOL programs to be used in a w
 ## Usage
 
 ```shell
-./scripts/cobol-wasm.sh <path_to_cobol_file> <program1,program2,program3>
+./scripts/cobol-wasm.sh <program1,program2,program3> </path/to/file1.cob> </path/to/file2.cob> ...
 ```
 
 Example:
 To compile a `hello.cob` file which defines a program `MY-PROGRAM` that you wish to call from javascript:
 
 ```shell
-./scripts/cobol-wasm.sh /path/to/hello.cob _MY__PROGRAM
+./scripts/cobol-wasm.sh _MY__PROGRAM /path/to/hello.cob
 ```
 This will produce `hello.js` and `hello.wasm` in the current working directory.
 

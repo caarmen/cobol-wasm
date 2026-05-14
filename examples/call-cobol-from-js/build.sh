@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -e
 
-./scripts/cobol-wasm.sh examples/call-cobol-from-js/AnswerToLife.cob _ANSWER__TO__LIFE,_ANSWER__TO__UNIVERSE
+./scripts/cobol-wasm.sh _ANSWER__TO__UNIVERSE,_ANSWER__TO__LIFE examples/call-cobol-from-js/AnswerToLife.cob examples/call-cobol-from-js/AnswerToUniverse.cob
 
-mv AnswerToLife.* examples/call-cobol-from-js/build/
+mv output.{js,wasm} examples/call-cobol-from-js/build/
