@@ -26,12 +26,15 @@ if [ ! -d gnucobol ]; then
 fi
 
 # Build cobc
+prefix_root="${PREFIX_ROOT:-/opt}"
+mkdir -p "${prefix_root}"
+prefix_root="$(realpath "${prefix_root}")"
 pushd gnucobol || exit
 aclocal
 automake
 ./configure \
     --disable-shared \
-    --prefix="/opt/gnucobol" \
+    --prefix="${prefix_root}/gnucobol" \
     --without-db
 
 make SUBDIRS="lib libcob cobc config"

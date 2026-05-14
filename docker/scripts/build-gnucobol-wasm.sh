@@ -26,18 +26,28 @@ if [ ! -d gnucobol-wasm ]; then
 fi
 
 # Build libcob
-pushd gnucobol-wasm || exit
+prefix_root="${PREFIX_ROOT:-/opt}"
+mkdir -p "${prefix_root}"
+prefix_root="$(realpath "${prefix_root}")"
 
+pushd gnucobol-wasm || exit
 aclocal
 automake
 
+BDB_LIBS_DIR="${deps_dir}/libdb/build_unix/.libs/"
+if [[ -f "${BDB_LIBS_DIR}/libdb-5.3.dylib" ]]; then
+  BDB_LIB="${BDB_LIBS_DIR}/libdb-5.3.dylib"
+else
+  BDB_LIB="${BDB_LIBS_DIR}/libdb-5.3.so"
+fi
+
 emconfigure ./configure \
     --disable-shared \
-    --prefix="/opt/gnucobol-wasm" \
+    --prefix="${prefix_root}/gnucobol-wasm" \
     LDFLAGS="-L${deps_dir}/gmp/.libs -lgmp" \
-    LIBS="${deps_dir}/libdb/build_unix/.libs/libdb-5.3.so" \
+    LIBS="${BDB_LIB}" \
     CPPFLAGS="-I${deps_dir}/gmp/ -I${deps_dir}/libdb/build_unix" \
-    BDB_LIBS="${deps_dir}/libdb/build_unix/.libs/libdb-5.3.so" \
+    BDB_LIBS="${BDB_LIB}" \
     BDB_CFLAGS="-I${deps_dir}/libdb/build_unix" 
      
 
