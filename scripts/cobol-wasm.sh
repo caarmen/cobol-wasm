@@ -4,8 +4,8 @@ set -e
 docker_image="ghcr.io/caarmen/cobol-wasm:latest"
 
 # Check if a COBOL file path is provided as an argument
-if [ $# -eq 0 ]; then
-  echo "Usage: $0 <path_to_cobol_file> [function1,function2,function3]"
+if [ $# != 2 ]; then
+  echo "Usage: $0 <path_to_cobol_file> <program1,program2,program3>"
   exit 1
 fi
 
