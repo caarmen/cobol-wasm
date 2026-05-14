@@ -37,6 +37,44 @@ npx http-server examples/call-cobol-from-js
 
 Open the example page at http://localhost:8080/AnswerToLife.html
 
+## Building
+### Build the Docker image
+To build the docker image:
+```shell
+docker build -t cobol-wasm .
+```
+
+### Build the tools on your machine
+
+You can run the scripts used to build the Docker image, directly on your machine:
+```shell
+./docker/scripts/build-all.sh
+```
+
+This assumes you have a development environment.
+
+Note, if you're on MacOS, you may need to define the "libtoolize" command as `glibtoolize`:
+```shell
+LIBTOOLIZE=glibtoolize ./docker/scripts/build-all.sh
+```
+
+By default, the build will install the following to `/opt`, which you will need to compile COBOL
+files to wasm:
+* Binaries:
+  * `/opt/gnucobol/bin/cobc`
+* Headers:
+  * `/opt/include/db.h`
+  * `/opt/include/gmp.h`
+* Wasm libraries:
+  * `/opt/lib/libdb-5.3.dylib` (mac) or `/opt/lib/libdb-5.3.so` (linux)
+    - This is actually a static library, not a shared library!
+  * `/opt/lib/libgmp.a`
+  * `/opt/gnucobol-wasm/lib/libcob.a`
+
+If you want to install these files to a location other than `/opt`, set the `PREFIX_ROOT`:
+```shell
+PREFIX_ROOT=/path/to/install ./docker/scripts/build-all.sh
+```
 
 ## License
 The files in this repository (shell scripts, Dockerfile, examples, etc.)
