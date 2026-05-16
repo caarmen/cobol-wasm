@@ -5,14 +5,13 @@ set -e
 gmp_version="6.3.0"
 deps_dir="deps"
 
+prefix="${PREFIX_ROOT:-$HOME/.local/cobol-wasm}"
+mkdir -p "${prefix}"
+prefix="$(realpath "${prefix}")"
+emsdk_dir="${prefix}/emsdk"
+
 mkdir -p "${deps_dir}"
 pushd "${deps_dir}" || exit
-emsdk_dir="emsdk"
-
-if [ ! -d "${emsdk_dir}" ]; then
-    echo "emsdk not present, exiting"
-    exit 1
-fi
 
 source "${emsdk_dir}/emsdk_env.sh"
 
@@ -23,10 +22,6 @@ if [ ! -d gmp ]; then
     rm "gmp.tar.gz"
     mv "gmp-${gmp_version}" gmp
 fi
-
-prefix="${PREFIX_ROOT:-$HOME/.local/cobol-wasm}"
-mkdir -p "${prefix}"
-prefix="$(realpath "${prefix}")"
 
 pushd gmp || exit
 

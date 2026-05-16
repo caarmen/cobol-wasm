@@ -7,7 +7,10 @@ gnucobol_version="3.2"
 deps_dir="$(realpath "${project_path}/deps")"
 mkdir -p "${deps_dir}"
 pushd "${deps_dir}" || exit
-emsdk_dir="emsdk"
+prefix_root="${PREFIX_ROOT:-$HOME/.local/cobol-wasm}"
+mkdir -p "${prefix_root}"
+prefix_root="$(realpath "${prefix_root}")"
+emsdk_dir="${prefix_root}/emsdk"
 
 source "${emsdk_dir}/emsdk_env.sh"
 
@@ -19,9 +22,6 @@ if [ ! -d gnucobol-wasm ]; then
 fi
 
 # Build libcob
-prefix_root="${PREFIX_ROOT:-$HOME/.local/cobol-wasm}"
-mkdir -p "${prefix_root}"
-prefix_root="$(realpath "${prefix_root}")"
 
 pushd gnucobol-wasm || exit
 aclocal

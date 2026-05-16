@@ -7,7 +7,7 @@ docker run --rm -it \
   -v "$(pwd):/workspace/input" \
   --workdir /workspace/input \
   "${docker_image}" \
-  bash -c "source /workspace/deps/emsdk/emsdk_env.sh && emcc \
+  bash -c "source /opt/emsdk/emsdk_env.sh && emcc \
     -I/opt/gnucobol/include \
     -I/opt/include \
     -L/opt/gnucobol-wasm/lib -lcob \

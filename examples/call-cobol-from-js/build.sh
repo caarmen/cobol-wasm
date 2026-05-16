@@ -6,7 +6,7 @@ build_dir="${example_dir}/build"
 mkdir -p "${build_dir}"
 
 "${install_root}/gnucobol/bin/cobc" -C "${example_dir}"/*.cob
-source deps/emsdk/emsdk_env.sh
+source "${install_root}/emsdk/emsdk_env.sh"
 
 BDB_LIBS_DIR="${install_root}/lib"
 if [[ -f "${BDB_LIBS_DIR}/libdb-5.3.dylib" ]]; then

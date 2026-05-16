@@ -2,10 +2,9 @@
 
 set -e
 
-deps_dir="deps"
-
-mkdir -p "${deps_dir}"
-pushd "${deps_dir}" || exit
+prefix="${PREFIX_ROOT:-$HOME/.local/cobol-wasm}"
+mkdir -p "${prefix}"
+pushd "${prefix}" || exit
 
 if [ ! -d emsdk ]; then
     git clone https://github.com/emscripten-core/emsdk.git

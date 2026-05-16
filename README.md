@@ -92,7 +92,7 @@ Now, to compile the "call-cobol-from-js" example:
 
 2. Produce js and wasm:
 ```bash
-source deps/emsdk/emsdk_env.sh
+source "$HOME/.local/cobol-wasm/emsdk/emsdk_env.sh"
 
 mkdir -p examples/call-cobol-from-js/build
 
@@ -154,8 +154,11 @@ LIBTOOLIZE=glibtoolize ./docker/scripts/build-all.sh
 
 By default, the build will install the following to `~/.local/cobol-wasm`, which you will need to compile COBOL
 files to wasm:
+* Scripts:
+  * `emsdk/emsdk_env.sh`
 * Binaries:
   * `gnucobol/bin/cobc`
+  * `emsdk/upstream/emscripten/emcc`
 * Headers:
   * `include/db.h`
   * `include/gmp.h`
