@@ -85,10 +85,9 @@ See the section [Build the tools on your machine](#option-2---build-the-tools-on
 
 Now, to compile the "call-cobol-from-js" example:
 
-Assuming you built the tools in `/opt`:
 1. Compile COBOL to C:
 ```shell
-/opt/gnucobol/bin/cobc -C examples/call-cobol-from-js/*.cob
+~/.local/cobol-wasm/gnucobol/bin/cobc -C examples/call-cobol-from-js/*.cob
 ```
 
 2. Produce js and wasm:
@@ -101,10 +100,10 @@ emcc -o "examples/call-cobol-from-js/build/output.js" \
   -O3 -s WASM=1 \
   -sEXPORTED_FUNCTIONS=_ANSWER__TO__LIFE,_ANSWER__TO__UNIVERSE,_cob_init,_malloc,_free \
   -sEXPORTED_RUNTIME_METHODS=cwrap,HEAPU8,UTF8ToString \
-  -I/opt/gnucobol/include \
-  -L/opt/gnucobol-wasm/lib -lcob \
-  -L/opt/lib -lgmp \
-  /opt/libdb-5.3.so \
+  -I$HOME/.local/cobol-wasm/gnucobol/include \
+  -L$HOME/.local/cobol-wasm/gnucobol-wasm/lib -lcob \
+  -L$HOME/.local/cobol-wasm/lib -lgmp \
+  $HOME/.local/cobol-wasm/lib/libdb-5.3.so \
   ./*.c
 ```
 Note: On mac, use `libdb-5.3.dylib` instead of `libdb-5.3.so`.
@@ -153,20 +152,20 @@ Note, if you're on MacOS, you may need to define the "libtoolize" command as `gl
 LIBTOOLIZE=glibtoolize ./docker/scripts/build-all.sh
 ```
 
-By default, the build will install the following to `/opt`, which you will need to compile COBOL
+By default, the build will install the following to `~/.local/cobol-wasm`, which you will need to compile COBOL
 files to wasm:
 * Binaries:
-  * `/opt/gnucobol/bin/cobc`
+  * `gnucobol/bin/cobc`
 * Headers:
-  * `/opt/include/db.h`
-  * `/opt/include/gmp.h`
+  * `include/db.h`
+  * `include/gmp.h`
 * Wasm libraries:
-  * `/opt/lib/libdb-5.3.dylib` (mac) or `/opt/lib/libdb-5.3.so` (linux)
+  * `lib/libdb-5.3.dylib` (mac) or `lib/libdb-5.3.so` (linux)
     - This is actually a static library, not a shared library!
-  * `/opt/lib/libgmp.a`
-  * `/opt/gnucobol-wasm/lib/libcob.a`
+  * `lib/libgmp.a`
+  * `gnucobol-wasm/lib/libcob.a`
 
-If you want to install these files to a location other than `/opt`, set the `PREFIX_ROOT`:
+If you want to install these files to a location other than `~/.local/cobol-wasm`, set the `PREFIX_ROOT`:
 ```shell
 PREFIX_ROOT=/path/to/install ./docker/scripts/build-all.sh
 ```

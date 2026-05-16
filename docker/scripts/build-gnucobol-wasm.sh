@@ -19,7 +19,7 @@ if [ ! -d gnucobol-wasm ]; then
 fi
 
 # Build libcob
-prefix_root="${PREFIX_ROOT:-/opt}"
+prefix_root="${PREFIX_ROOT:-$HOME/.local/cobol-wasm}"
 mkdir -p "${prefix_root}"
 prefix_root="$(realpath "${prefix_root}")"
 

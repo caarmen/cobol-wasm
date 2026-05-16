@@ -19,7 +19,7 @@ if [ ! -d gnucobol ]; then
 fi
 
 # Build cobc
-prefix_root="${PREFIX_ROOT:-/opt}"
+prefix_root="${PREFIX_ROOT:-$HOME/.local/cobol-wasm}"
 mkdir -p "${prefix_root}"
 prefix_root="$(realpath "${prefix_root}")"
 pushd gnucobol || exit

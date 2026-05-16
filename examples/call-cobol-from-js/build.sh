@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-install_root="${PREFIX_ROOT:-/opt}"
+install_root="${PREFIX_ROOT:-$HOME/.local/cobol-wasm}"
 example_dir=examples/call-cobol-from-js
 build_dir="${example_dir}/build"
 mkdir -p "${build_dir}"

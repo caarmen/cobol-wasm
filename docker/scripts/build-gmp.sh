@@ -24,7 +24,7 @@ if [ ! -d gmp ]; then
     mv "gmp-${gmp_version}" gmp
 fi
 
-prefix="${PREFIX_ROOT:-/opt}"
+prefix="${PREFIX_ROOT:-$HOME/.local/cobol-wasm}"
 mkdir -p "${prefix}"
 prefix="$(realpath "${prefix}")"
 

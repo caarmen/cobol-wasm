@@ -18,7 +18,7 @@ if [ ! -d libdb ]; then
     git clone https://github.com/berkeleydb/libdb.git
 fi
 
-prefix="${PREFIX_ROOT:-/opt}"
+prefix="${PREFIX_ROOT:-$HOME/.local/cobol-wasm}"
 mkdir -p "${prefix}"
 prefix="$(realpath "${prefix}")"
 
