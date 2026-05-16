@@ -59,7 +59,7 @@ The scripts therefore require the COBOL sources to be accessible from your curre
 For example, to compile the "call-cobol-from-js" example:
 
 1. Compile COBOL to C:
-```shell
+```bash
 ./scripts/cobc.sh -C examples/call-cobol-from-js/*.cob
 ```
 
@@ -86,7 +86,7 @@ See the section [Build the tools on your machine](#option-2---build-the-tools-on
 Now, to compile the "call-cobol-from-js" example:
 
 1. Compile COBOL to C:
-```shell
+```bash
 ~/.local/cobol-wasm/gnucobol/bin/cobc -C examples/call-cobol-from-js/*.cob
 ```
 
@@ -114,12 +114,12 @@ After building the example, serve the HTML file at [examples/call-cobol-from-js/
 
 For example: 
 
-```shell
+```bash
 python -m http.server -d examples/call-cobol-from-js 8080
 ```
 or
 
-```shell
+```bash
 npx http-server examples/call-cobol-from-js
 ```
 
@@ -132,21 +132,21 @@ repository, you can build the docker image, or build the the tools natively on y
 
 ### Option 1 - Build the Docker image
 To build the docker image:
-```shell
+```bash
 docker build -t cobol-wasm .
 ```
 
 ### Option 2 - Build the tools on your machine
 
 You can run the scripts used to build the Docker image, directly on your machine:
-```shell
+```bash
 ./docker/scripts/build-all.sh
 ```
 
 This assumes you have a development environment.
 
 Note, if you're on MacOS, you may need to define the "libtoolize" command as `glibtoolize`:
-```shell
+```bash
 LIBTOOLIZE=glibtoolize ./docker/scripts/build-all.sh
 ```
 
@@ -167,14 +167,14 @@ files to wasm:
   * `gnucobol-wasm/lib/libcob.a`
 
 If you want to install these files to a location other than `~/.local/cobol-wasm`, set the `PREFIX_ROOT`:
-```shell
+```bash
 PREFIX_ROOT=/path/to/install ./docker/scripts/build-all.sh
 ```
 
 ## Disclaimer
 
-⚠️This project has only been tested with the few COBOL source files 
-in the examples folder. It has not been used in prouction.
+⚠️ This project has only been tested with the few COBOL source files
+in the examples folder. It has not been used in production.
 
 Use at your own risk! 🫠
 
