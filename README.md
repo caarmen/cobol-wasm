@@ -44,25 +44,76 @@ See also:
 
 ## Usage
 
+### Building wasm files from COBOL sources
+#### Option 1 - Using the docker image
+
+This project provides wrappers around the `cobc` and `emcc` tools inside the docker image:
+* `scripts/cobc.sh`
+* `scripts/emcc.sh`
+
+By default, docker doesn't have access to your filesystem.
+The scripts mount your current working directory as a volume for the docker container.
+
+The scripts therefore require the COBOL sources to be accessible from your current working directory or a subfolder.
+
+For example, to compile the "call-cobol-from-js" example:
+
+1. Compile COBOL to C:
 ```shell
-./scripts/cobol-wasm.sh <program1,program2,program3> </path/to/file1.cob> </path/to/file2.cob> ...
+./scripts/cobc.sh -C examples/call-cobol-from-js/*.cob
 ```
 
-Example:
-To compile a `hello.cob` file which defines a program `MY-PROGRAM` that you wish to call from javascript:
+2. Produce js and wasm:
+```bash
+mkdir -p examples/call-cobol-from-js/build
 
-```shell
-./scripts/cobol-wasm.sh _MY__PROGRAM /path/to/hello.cob
+./scripts/emcc.sh \
+  -O3 \
+  -sWASM=1 \
+  -sEXPORTED_FUNCTIONS=_ANSWER__TO__LIFE,_ANSWER__TO__UNIVERSE,_cob_init,_malloc,_free \
+  -sEXPORTED_RUNTIME_METHODS=cwrap,HEAPU8,UTF8ToString \
+  -o examples/call-cobol-from-js/build/output.js \
+  ./*.c
 ```
-This will produce `hello.js` and `hello.wasm` in the current working directory.
 
-## Example
-Try the example:
+Note that these commands are demonstrated in [./examples/call-cobol-from-js/build-using-docker.sh](./examples/call-cobol-from-js/build-using-docker.sh)
+
+
+#### Option 2 - Using the tools on your machine
+You first need to build the tools on your machine.
+See the section [Build the tools on your machine](#option-2---build-the-tools-on-your-machine).
+
+Now, to compile the "call-cobol-from-js" example:
+
+Assuming you built the tools in `/opt`:
+1. Compile COBOL to C:
 ```shell
-./examples/call-cobol-from-js/build.sh
+/opt/gnucobol/bin/cobc -C examples/call-cobol-from-js/*.cob
 ```
 
-Serve the html file at `examples/call-cobol-from-js/AnswerToLife.html`.
+2. Produce js and wasm:
+```bash
+source deps/emsdk/emsdk_env.sh
+
+mkdir -p examples/call-cobol-from-js/build
+
+emcc -o "examples/call-cobol-from-js/build/output.js" \
+  -O3 -s WASM=1 \
+  -sEXPORTED_FUNCTIONS=_ANSWER__TO__LIFE,_ANSWER__TO__UNIVERSE,_cob_init,_malloc,_free \
+  -sEXPORTED_RUNTIME_METHODS=cwrap,HEAPU8,UTF8ToString \
+  -I/opt/gnucobol/include \
+  -L/opt/gnucobol-wasm/lib -lcob \
+  -L/opt/lib -lgmp \
+  /opt/libdb-5.3.so \
+  ./*.c
+```
+Note: On mac, use `libdb-5.3.dylib` instead of `libdb-5.3.so`.
+
+Note that these commands are demonstrated in [./examples/call-cobol-from-js/build.sh](./examples/call-cobol-from-js/build.sh)
+
+### Serving the HTML pages
+
+After building the example, serve the HTML file at [examples/call-cobol-from-js/AnswerToLife.html](examples/call-cobol-from-js/AnswerToLife.html).
 
 For example: 
 
@@ -77,14 +128,18 @@ npx http-server examples/call-cobol-from-js
 
 Open the example page at http://localhost:8080/AnswerToLife.html
 
-## Building
-### Build the Docker image
+## Building the tools
+
+If you don't want to use the docker image on the Github docker
+repository, you can build the docker image, or build the the tools natively on your machine.
+
+### Option 1 - Build the Docker image
 To build the docker image:
 ```shell
 docker build -t cobol-wasm .
 ```
 
-### Build the tools on your machine
+### Option 2 - Build the tools on your machine
 
 You can run the scripts used to build the Docker image, directly on your machine:
 ```shell
