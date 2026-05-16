@@ -11,6 +11,5 @@ docker run --rm -it \
     -I/opt/gnucobol/include \
     -I/opt/include \
     -L/opt/gnucobol-wasm/lib -lcob \
-    -L/opt/lib -lgmp \
-    /opt/lib/libdb-5.3.so \
+    -L/opt/lib -lgmp -ldb-5.3 \
     $*"

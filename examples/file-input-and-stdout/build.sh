@@ -8,13 +8,6 @@ mkdir -p "${build_dir}"
 "${install_root}/gnucobol/bin/cobc" -x -C "${example_dir}"/*.cob
 source "${install_root}/emsdk/emsdk_env.sh"
 
-BDB_LIBS_DIR="${install_root}/lib"
-if [[ -f "${BDB_LIBS_DIR}/libdb-5.3.dylib" ]]; then
-  BDB_LIB="${BDB_LIBS_DIR}/libdb-5.3.dylib"
-else
-  BDB_LIB="${BDB_LIBS_DIR}/libdb-5.3.so"
-fi
-
 emcc -o "${build_dir}/output.js" \
   -O3 -s WASM=1 \
   -sINVOKE_RUN=0 \
@@ -24,6 +17,5 @@ emcc -o "${build_dir}/output.js" \
   -I"${install_root}/gnucobol/include" \
   -I"${install_root}/include" \
   -L"${install_root}/gnucobol-wasm/lib" -lcob \
-  -L"${install_root}/lib" -lgmp \
-  "${BDB_LIB}" \
+  -L"${install_root}/lib" -lgmp -ldb-5.3 \
   ./*.c

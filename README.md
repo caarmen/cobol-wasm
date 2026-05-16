@@ -102,11 +102,9 @@ emcc -o "examples/call-cobol-from-js/build/output.js" \
   -sEXPORTED_RUNTIME_METHODS=cwrap,HEAPU8,UTF8ToString \
   -I$HOME/.local/cobol-wasm/gnucobol/include \
   -L$HOME/.local/cobol-wasm/gnucobol-wasm/lib -lcob \
-  -L$HOME/.local/cobol-wasm/lib -lgmp \
-  $HOME/.local/cobol-wasm/lib/libdb-5.3.so \
+  -L$HOME/.local/cobol-wasm/lib -lgmp -ldb \
   ./*.c
 ```
-Note: On mac, use `libdb-5.3.dylib` instead of `libdb-5.3.so`.
 
 Note that these commands are demonstrated in [./examples/call-cobol-from-js/build.sh](./examples/call-cobol-from-js/build.sh)
 
