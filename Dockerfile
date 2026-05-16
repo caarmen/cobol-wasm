@@ -29,6 +29,8 @@ WORKDIR /workspace
 
 COPY docker/scripts/*.sh .
 
+ENV PREFIX_ROOT=/opt
+
 RUN ./build-emsdk.sh
 RUN ./build-gmp.sh
 RUN ./build-libdb.sh

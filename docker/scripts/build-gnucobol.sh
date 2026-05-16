@@ -7,9 +7,6 @@ gnucobol_version="3.2"
 deps_dir="$(realpath "${project_path}/deps")"
 mkdir -p "${deps_dir}"
 pushd "${deps_dir}" || exit
-emsdk_dir="emsdk"
-
-source "${emsdk_dir}/emsdk_env.sh"
 
 if [ ! -d gnucobol ]; then
     curl "https://ftp.gnu.org/gnu/gnucobol/gnucobol-${gnucobol_version}.tar.gz" --output gnucobol.tar.gz
@@ -19,7 +16,7 @@ if [ ! -d gnucobol ]; then
 fi
 
 # Build cobc
-prefix_root="${PREFIX_ROOT:-/opt}"
+prefix_root="${PREFIX_ROOT:-$HOME/.local/cobol-wasm}"
 mkdir -p "${prefix_root}"
 prefix_root="$(realpath "${prefix_root}")"
 pushd gnucobol || exit

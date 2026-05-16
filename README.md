@@ -44,82 +44,137 @@ See also:
 
 ## Usage
 
-```shell
-./scripts/cobol-wasm.sh <program1,program2,program3> </path/to/file1.cob> </path/to/file2.cob> ...
+### Building wasm files from COBOL sources
+#### Option 1 - Using the docker image
+
+This project provides wrappers around the `cobc` and `emcc` tools inside the docker image:
+* `scripts/cobc.sh`
+* `scripts/emcc.sh`
+
+By default, docker doesn't have access to your filesystem.
+The scripts mount your current working directory as a volume for the docker container.
+
+The scripts therefore require the COBOL sources to be accessible from your current working directory or a subfolder.
+
+For example, to compile the "call-cobol-from-js" example:
+
+1. Compile COBOL to C:
+```bash
+./scripts/cobc.sh -C examples/call-cobol-from-js/*.cob
 ```
 
-Example:
-To compile a `hello.cob` file which defines a program `MY-PROGRAM` that you wish to call from javascript:
+2. Produce js and wasm:
+```bash
+mkdir -p examples/call-cobol-from-js/build
 
-```shell
-./scripts/cobol-wasm.sh _MY__PROGRAM /path/to/hello.cob
+./scripts/emcc.sh \
+  -O3 \
+  -sWASM=1 \
+  -sEXPORTED_FUNCTIONS=_ANSWER__TO__LIFE,_ANSWER__TO__UNIVERSE,_cob_init,_malloc,_free \
+  -sEXPORTED_RUNTIME_METHODS=cwrap,HEAPU8,UTF8ToString \
+  -o examples/call-cobol-from-js/build/output.js \
+  ./*.c
 ```
-This will produce `hello.js` and `hello.wasm` in the current working directory.
 
-## Example
-Try the example:
-```shell
-./examples/call-cobol-from-js/build.sh
+Note that these commands are demonstrated in [./examples/call-cobol-from-js/build-using-docker.sh](./examples/call-cobol-from-js/build-using-docker.sh)
+
+
+#### Option 2 - Using the tools on your machine
+You first need to build the tools on your machine.
+See the section [Build the tools on your machine](#option-2---build-the-tools-on-your-machine).
+
+Now, to compile the "call-cobol-from-js" example:
+
+1. Compile COBOL to C:
+```bash
+~/.local/cobol-wasm/gnucobol/bin/cobc -C examples/call-cobol-from-js/*.cob
 ```
 
-Serve the html file at `examples/call-cobol-from-js/AnswerToLife.html`.
+2. Produce js and wasm:
+```bash
+source "$HOME/.local/cobol-wasm/emsdk/emsdk_env.sh"
+
+mkdir -p examples/call-cobol-from-js/build
+
+emcc -o "examples/call-cobol-from-js/build/output.js" \
+  -O3 -s WASM=1 \
+  -sEXPORTED_FUNCTIONS=_ANSWER__TO__LIFE,_ANSWER__TO__UNIVERSE,_cob_init,_malloc,_free \
+  -sEXPORTED_RUNTIME_METHODS=cwrap,HEAPU8,UTF8ToString \
+  -I$HOME/.local/cobol-wasm/gnucobol/include \
+  -L$HOME/.local/cobol-wasm/gnucobol-wasm/lib -lcob \
+  -L$HOME/.local/cobol-wasm/lib -lgmp -ldb \
+  ./*.c
+```
+
+Note that these commands are demonstrated in [./examples/call-cobol-from-js/build.sh](./examples/call-cobol-from-js/build.sh)
+
+### Serving the HTML pages
+
+After building the example, serve the HTML file at [examples/call-cobol-from-js/AnswerToLife.html](examples/call-cobol-from-js/AnswerToLife.html).
 
 For example: 
 
-```shell
+```bash
 python -m http.server -d examples/call-cobol-from-js 8080
 ```
 or
 
-```shell
+```bash
 npx http-server examples/call-cobol-from-js
 ```
 
 Open the example page at http://localhost:8080/AnswerToLife.html
 
-## Building
-### Build the Docker image
+## Building the tools
+
+If you don't want to use the docker image on the Github docker
+repository, you can build the docker image, or build the the tools natively on your machine.
+
+### Option 1 - Build the Docker image
 To build the docker image:
-```shell
+```bash
 docker build -t cobol-wasm .
 ```
 
-### Build the tools on your machine
+### Option 2 - Build the tools on your machine
 
 You can run the scripts used to build the Docker image, directly on your machine:
-```shell
+```bash
 ./docker/scripts/build-all.sh
 ```
 
 This assumes you have a development environment.
 
 Note, if you're on MacOS, you may need to define the "libtoolize" command as `glibtoolize`:
-```shell
+```bash
 LIBTOOLIZE=glibtoolize ./docker/scripts/build-all.sh
 ```
 
-By default, the build will install the following to `/opt`, which you will need to compile COBOL
+By default, the build will install the following to `~/.local/cobol-wasm`, which you will need to compile COBOL
 files to wasm:
+* Scripts:
+  * `emsdk/emsdk_env.sh`
 * Binaries:
-  * `/opt/gnucobol/bin/cobc`
+  * `gnucobol/bin/cobc`
+  * `emsdk/upstream/emscripten/emcc`
 * Headers:
-  * `/opt/include/db.h`
-  * `/opt/include/gmp.h`
+  * `include/db.h`
+  * `include/gmp.h`
 * Wasm libraries:
-  * `/opt/lib/libdb-5.3.dylib` (mac) or `/opt/lib/libdb-5.3.so` (linux)
+  * `lib/libdb-5.3.dylib` (mac) or `lib/libdb-5.3.so` (linux)
     - This is actually a static library, not a shared library!
-  * `/opt/lib/libgmp.a`
-  * `/opt/gnucobol-wasm/lib/libcob.a`
+  * `lib/libgmp.a`
+  * `gnucobol-wasm/lib/libcob.a`
 
-If you want to install these files to a location other than `/opt`, set the `PREFIX_ROOT`:
-```shell
+If you want to install these files to a location other than `~/.local/cobol-wasm`, set the `PREFIX_ROOT`:
+```bash
 PREFIX_ROOT=/path/to/install ./docker/scripts/build-all.sh
 ```
 
 ## Disclaimer
 
-⚠️This project has only been tested with the few COBOL source files 
-in the examples folder. It has not been used in prouction.
+⚠️ This project has only been tested with the few COBOL source files
+in the examples folder. It has not been used in production.
 
 Use at your own risk! 🫠
 
